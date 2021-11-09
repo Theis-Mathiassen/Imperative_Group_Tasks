@@ -1,0 +1,1 @@
+Det nye program kører fint, i første løkke bliver største og mindste værdier blot byttet rundt.
