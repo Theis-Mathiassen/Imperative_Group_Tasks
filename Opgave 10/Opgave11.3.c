@@ -8,10 +8,9 @@ int modulus (int dividend, int divisor);
 int main (void) {
     
     printf("Dividend: %d\n", divide(22, 4));
-    printf("Modulus: %d\n", modulus(22,4));
+    printf("Modulus: %d\n", modulus(22, 4));
     return EXIT_SUCCESS;
 }
-
 
 int divide (int dividend, int divisor) {
     if (dividend < divisor) {
