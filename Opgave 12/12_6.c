@@ -19,44 +19,70 @@ typedef struct listHandle {
 
 void print_point(point *p);
 void print_circular_point_list(const listHandle *);
-list_node *insert_head(listHandle *list, list_node *node);
-list_node *insert_tail(listHandle *list, list_node *node);
-list_node *delete_head(listHandle *list);
-list_node *delete_tail(listHandle *list);
+void insert_head(listHandle *list, list_node *node);
+void insert_tail(listHandle *list, list_node *node);
+void delete_head(listHandle *list);
+void delete_tail(listHandle *list);
 int length_of_circular_list(listHandle *list);
 list_node *find_previous_node(list_node *cl);
-void insertListNode (list_node *node, listHandle *list, int index);
 listHandle CreateList ();
 list_node CreateNode ();
 
 int main(void) {
-    point p1 = {1,2}, p2 = {3,4}, p3 = {5,6}, p4 = {7,8};
+    point p1 = {1,2}, p2 = {3,4}, p3 = {5,6}, p4 = {7,8}, p5 = {9,10}, p6 = {11,12};
 
     listHandle circular_list = CreateList();
     list_node node1 = CreateNode();
     node1.data = &p1;
-    insertListNode(&node1, &circular_list, 0);
+    insert_head(&circular_list, &node1);
 
     print_circular_point_list(&circular_list);
     printf("\n");
 
     list_node node2 = CreateNode();
     node2.data = &p2;
-    insertListNode(&node2, &circular_list, 0);
+    insert_head(&circular_list, &node2);
 
     print_circular_point_list(&circular_list);
     printf("\n");
 
     list_node node3 = CreateNode();
     node3.data = &p3;
-    insertListNode(&node3, &circular_list, 0);
+    insert_head(&circular_list, &node3);
 
     print_circular_point_list(&circular_list);
     printf("\n");
 
     list_node node4 = CreateNode();
     node4.data = &p4;
-    insertListNode(&node4, &circular_list, 0);
+    insert_head(&circular_list, &node4);
+
+    print_circular_point_list(&circular_list);
+    printf("\n");
+
+
+
+
+
+    list_node node5 = CreateNode();
+    node5.data = &p5;
+    insert_head(&circular_list, &node5);
+    print_circular_point_list(&circular_list);
+    printf("\n");
+
+    list_node node6 = CreateNode();
+    node6.data = &p6;
+    insert_tail(&circular_list, &node6);
+    print_circular_point_list(&circular_list);
+    printf("\n");
+
+    delete_head(&circular_list);
+    print_circular_point_list(&circular_list);
+    printf("\n");
+
+    delete_tail(&circular_list);
+    print_circular_point_list(&circular_list);
+    printf("\n");
 
 
 
@@ -86,30 +112,16 @@ void print_point(point *p){
     printf("(%1d, %1d)\n", p->x, p->y);
 }
 
-void insertListNode (list_node *node, listHandle *list, int index) {
-    index = 0;
-    if (list->size == 1){
-        list->start->next = node;
-        node->next = list->start;
-    } else if (list->size > 1){
-        node->next = list->start->next;
-        list->start->next = node;
-    } else {
-        node->next = node;
-        list->start = node;
-    }
-    list->size++;
-}
-
 void print_circular_point_list(const listHandle *list){
-    list_node *cur;
+    list_node *cur, *prev;
 
     if (list->start != NULL){
-        cur = list->start;
+        cur = list->start->next;
         do{
+            prev = cur;
             print_point((point*)cur->data);
             cur = cur->next;
-        } while(cur != list->start);
+        } while(prev != list->start);
     }
 }
 
@@ -118,15 +130,41 @@ int length_of_circular_list(listHandle *list){
     return list->size; 
 }
 
-list_node *insert_head(listHandle *list, list_node *node) {
-    
+void insert_head(listHandle *list, list_node *node) {
+    if (list->size > 0){
+        node->next = list->start->next;
+        list->start->next = node;
+    } else {
+        node->next = node;
+        list->start = node;
+    }
+    list->size++;
 }
-list_node *insert_tail(listHandle *list, list_node *node) {
+void insert_tail(listHandle *list, list_node *node) {
+    if (list->size > 0){
+        node->next = list->start->next;
+        list->start->next = node;
+        list->start = node;
 
+    } else {
+        node->next = node;
+        list->start = node;
+    }
+    list->size++;
 }
-list_node *delete_head(listHandle *list) {
-
+/* Denne funktion kører ikke i konstant tid */
+void delete_head(listHandle *list) {
+    list_node *current = list->start->next, *prev;
+    while (current != list->start) {
+        prev = current;
+        current = current->next;
+    }
+    /* Current now equals list start */
+    prev->next = current->next;
+    list->start = prev;
+    list->size--;
 }
-list_node *delete_tail(listHandle *list){
-
+void delete_tail(listHandle *list){
+    list->start->next = list->start->next->next;
+    list->size--;
 }
