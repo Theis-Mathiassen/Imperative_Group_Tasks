@@ -13,7 +13,7 @@ struct list_node {
 typedef struct list_node list_node;
 
 typedef struct listHandle {
-    struct list_node *start;
+    struct list_node *tail;
     int size;
 } listHandle;
 
@@ -97,7 +97,7 @@ int main(void) {
 listHandle CreateList () {
     listHandle temp;
     temp.size = 0;
-    temp.start = NULL;
+    temp.tail = NULL;
     return temp;
 }
 
@@ -115,13 +115,13 @@ void print_point(point *p){
 void print_circular_point_list(const listHandle *list){
     list_node *cur, *prev;
 
-    if (list->start != NULL){
-        cur = list->start->next;
+    if (list->tail != NULL){
+        cur = list->tail->next;
         do{
             prev = cur;
             print_point((point*)cur->data);
             cur = cur->next;
-        } while(prev != list->start);
+        } while(prev != list->tail);
     }
 }
 
@@ -132,39 +132,39 @@ int length_of_circular_list(listHandle *list){
 
 void insert_head(listHandle *list, list_node *node) {
     if (list->size > 0){
-        node->next = list->start->next;
-        list->start->next = node;
+        node->next = list->tail->next;
+        list->tail->next = node;
     } else {
         node->next = node;
-        list->start = node;
+        list->tail = node;
     }
     list->size++;
 }
 void insert_tail(listHandle *list, list_node *node) {
     if (list->size > 0){
-        node->next = list->start->next;
-        list->start->next = node;
-        list->start = node;
+        node->next = list->tail->next;
+        list->tail->next = node;
+        list->tail = node;
 
     } else {
         node->next = node;
-        list->start = node;
+        list->tail = node;
     }
     list->size++;
 }
 /* Denne funktion kører ikke i konstant tid */
 void delete_head(listHandle *list) {
-    list_node *current = list->start->next, *prev;
-    while (current != list->start) {
+    list->tail->next = list->tail->next->next;
+    list->size--;
+}
+void delete_tail(listHandle *list){
+    list_node *current = list->tail->next, *prev;
+    while (current != list->tail) {
         prev = current;
         current = current->next;
     }
     /* Current now equals list start */
     prev->next = current->next;
-    list->start = prev;
-    list->size--;
-}
-void delete_tail(listHandle *list){
-    list->start->next = list->start->next->next;
+    list->tail = prev;
     list->size--;
 }
